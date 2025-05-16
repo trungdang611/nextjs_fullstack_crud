@@ -39,17 +39,14 @@ export default function RootLayout({
               </li>
               <li>
                 <Link
-                  href="/list-post"
+                  href="/posts/list"
                   className="text-blue-600 hover:underline"
                 >
                   List Post
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/list-user"
-                  className="text-blue-600 hover:underline"
-                >
+                <Link href="/users" className="text-blue-600 hover:underline">
                   List User
                 </Link>
               </li>

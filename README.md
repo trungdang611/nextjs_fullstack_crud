@@ -40,7 +40,7 @@ npm install prisma --save-dev
 Sau đó khởi tạo cấu hình Prisma (nếu chưa có):
 
 ```bash
-npx prisma init
+prisma migrate dev --name init
 ```
 
 Truy cập trình duyệt đối với Project:

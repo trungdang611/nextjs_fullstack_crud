@@ -8,6 +8,8 @@ export default async function page() {
     },
   });
 
+  const users = await prisma.user.findMany();
+
   const data = posts.map((post) => ({
     id: post.id,
     title: post.title,
@@ -20,6 +22,16 @@ export default async function page() {
   return (
     <>
       <h1 className="text-center font-bold text-3xl mb-5">All Post</h1>
+      <ul className="mb-3 flex flex-wrap gap-5 list-none">
+        <li>
+          <a href="/list-post">All</a>
+        </li>
+        {users.map((user) => (
+          <li key={user.id}>
+            <a href="">{user.name}</a>
+          </li>
+        ))}
+      </ul>
       <ListTable data={data} />
     </>
   );
