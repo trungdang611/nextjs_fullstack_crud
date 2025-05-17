@@ -24,7 +24,7 @@ export default async function page() {
       <h1 className="text-center font-bold text-3xl mb-5">All Post</h1>
       <ul className="mb-3 flex flex-wrap gap-5 list-none">
         <li>
-          <a href="/list-post">All</a>
+          <a href="/posts/list">All</a>
         </li>
         {users.map((user) => (
           <li key={user.id}>
