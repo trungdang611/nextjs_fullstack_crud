@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
 
 export async function createPost(formData: FormData) {
   const title = formData.get("title") as string;
@@ -20,26 +21,31 @@ export async function createPost(formData: FormData) {
   revalidatePath("/posts");
 }
 
-export async function updatePost(postId: string, formData: FormData) {
+// GET: lấy 1 post theo ID
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const post = await prisma.post.findUnique({ where: { id: params.id } });
+  return NextResponse.json(post);
+}
+
+export async function updatePost(id: string, formData: FormData) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string | null;
   const thumbnailURL = formData.get("thumbnailURL") as string;
+  const userId = formData.get("userId") as string;
 
-  if (!title) {
-    throw new Error("Title is required");
-  }
-  if (!thumbnailURL) {
-    throw new Error("ThumbnailURL is required");
-  }
-
-  await prisma.post.update({
-    where: { id: postId },
+  const updated = await prisma.post.update({
+    where: { id },
     data: {
       title,
       description,
       thumbnailURL,
+      userId,
     },
   });
 
   revalidatePath("/posts");
+  return updated;
 }

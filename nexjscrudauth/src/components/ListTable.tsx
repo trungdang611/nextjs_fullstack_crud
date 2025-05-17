@@ -63,7 +63,10 @@ export default function ListTable({ data }: ListTableProps) {
                 <td className="px-4 py-2 text-gray-600">{item.user}</td>
                 <td className="px-4 py-2">
                   <div className="flex gap-2">
-                    <button className="px-3 py-1 text-sm font-medium text-white bg-yellow-600 rounded hover:bg-yellow-700 transition cursor-pointer">
+                    <button
+                      onClick={() => router.push("/posts/update/" + item.id)}
+                      className="px-3 py-1 text-sm font-medium text-white bg-yellow-600 rounded hover:bg-yellow-700 transition cursor-pointer"
+                    >
                       Edit
                     </button>
                     <button className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 transition cursor-pointer">

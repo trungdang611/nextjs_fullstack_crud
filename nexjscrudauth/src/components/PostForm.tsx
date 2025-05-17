@@ -12,6 +12,7 @@ type PostFormProps = {
   users: User[]; // danh sách user để chọn
   onSubmit: (formData: FormData) => Promise<void>;
   defaultValues?: {
+    id?: string;
     title?: string;
     description?: string;
     thumbnailURL?: string;
