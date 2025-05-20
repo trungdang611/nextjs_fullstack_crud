@@ -8,12 +8,15 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  post Post[]
+  id             String   @id @default(cuid())
+  email          String   @unique
+  password       String
+  fullname       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  accessToken    String? // optional if you store access tokens
+  refreshToken   String? // optional if you store refresh tokens
+  posts          Post[]
 }
 
 model Post {

@@ -31,6 +31,10 @@ export default function RootLayout({
         <div className="flex min-h-screen">
           <nav className="w-64 bg-gray-100 p-4 border-r">
             <h2 className="text-xl font-bold mb-4">My App</h2>
+            <p className="text-gray-600 mb-4">
+              This is a simple CRUD application using Next.js and TypeScript.
+            </p>
+
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-blue-600 hover:underline">
@@ -52,7 +56,8 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-          <main className="flex-1 p-6">{children}</main>
+
+          <main className="flex-1 p-6 bg-gray-50">{children}</main>
         </div>
       </body>
     </html>

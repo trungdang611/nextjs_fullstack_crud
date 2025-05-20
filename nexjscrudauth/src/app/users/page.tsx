@@ -5,7 +5,7 @@ export default async function ListUserPage() {
   const users = await prisma.user.findMany({
     include: {
       _count: {
-        select: { post: true },
+        select: { posts: true },
       },
     },
   });
@@ -15,12 +15,12 @@ export default async function ListUserPage() {
     name: user.name,
     description: user.description ?? "",
     createdAt: user.createdAt.toISOString().split("T")[0],
-    postCount: user._count.post,
+    postCount: user._count.posts,
   }));
 
   return (
     <>
-      <h1 className="text-center font-bold text-3xl mb-5">All Post</h1>
+      <h1 className="text-center font-bold text-3xl mb-5">All Users</h1>
       <ListTableUser data={data} />
     </>
   );
