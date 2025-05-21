@@ -3,7 +3,11 @@
 import authAxios from "@/util/axios.config";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { emailRegex, vietnameseNameRegex } from "@/util/regex";
+import {
+  emailRegex,
+  strongPasswordRegex,
+  vietnameseNameRegex,
+} from "@/util/regex";
 
 export default function Register() {
   const router = useRouter();
@@ -13,7 +17,11 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const validateFields = () => {
+  const validateFields = (
+    fullname: string,
+    email: string,
+    password: string
+  ) => {
     const errors: Record<string, string> = {};
 
     if (!fullname.trim()) {
@@ -26,18 +34,20 @@ export default function Register() {
 
     if (!email.trim()) {
       errors.email = "Trường email không được để trống!";
-    } else if (!emailRegex.test(email)) {
+    } else if (!emailRegex.test(email.trim())) {
       errors.email = "Email không đúng định dạng!";
     }
 
     if (!password.trim()) {
       errors.password = "Trường password không được để trống!";
-    } else if (password.length < 6 || password.length > 15) {
-      errors.password = "Password phải từ 6 đến 15 kí tự!";
+    } else if (password.length < 8) {
+      errors.password = "Password phải từ 8 kí tự trở lên!";
+    } else if (!strongPasswordRegex.test(password)) {
+      errors.password =
+        "Password phải chứa ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường, 1 số và 1 ký tự đặc biệt!";
     }
 
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errors;
   };
 
   const actionSubmit = async (prevState: any, formData: FormData) => {
@@ -46,12 +56,13 @@ export default function Register() {
     const password = formData.get("password")?.toString().trim() || "";
 
     // Kiểm tra các trường rỗng
-    if (!validateFields()) {
-      console.log(fieldErrors);
+    const errors = validateFields(fullname, email, password);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return {
         success: false,
         message: "Vui lòng kiểm tra lại thông tin!",
-        fieldErrors,
+        fieldErrors: errors,
       };
     }
 
@@ -92,16 +103,12 @@ export default function Register() {
   //fix if else
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    switch (name) {
-      case "fullname":
-        setFullname(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "password":
-        setPassword(value);
-        break;
+    if (name === "fullname") {
+      setFullname(value);
+    } else if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
     }
   };
 
@@ -114,16 +121,16 @@ export default function Register() {
     }`;
 
   return (
-    <div className="flex items-center justify-center px-4">
+    <div className="flex items-center justify-center px-6 mt-10">
       <div className="w-full max-w-md bg-white shadow-md rounded-2xl p-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Create your account
+          Register
         </h2>
 
         <form action={formAction} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
+              Full Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -141,7 +148,7 @@ export default function Register() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -159,7 +166,7 @@ export default function Register() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              Password <span className="text-red-500">*</span>
             </label>
             <input
               type="password"

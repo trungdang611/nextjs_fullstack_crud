@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { emailRegex, vietnameseNameRegex } from "@/util/regex";
+import {
+  emailRegex,
+  strongPasswordRegex,
+  vietnameseNameRegex,
+} from "@/util/regex";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
@@ -28,8 +32,11 @@ export async function POST(request: Request) {
 
   if (!password) {
     fieldErrors.password = "Trường password không được để trống!";
-  } else if (password.length < 6 || password.length > 15) {
-    fieldErrors.password = "Password phải từ 6 đến 15 kí tự!";
+  } else if (password.length < 8) {
+    fieldErrors.password = "Password phải từ 8 kí tự trở lên!";
+  } else if (!strongPasswordRegex.test(password)) {
+    fieldErrors.password =
+      "Password phải chứa ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường, 1 số và 1 ký tự đặc biệt!";
   }
 
   // Nếu có lỗi => trả về fieldErrors
