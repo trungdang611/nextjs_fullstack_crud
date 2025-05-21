@@ -3,6 +3,7 @@
 import authAxios from "@/util/axios.config";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { emailRegex, vietnameseNameRegex } from "@/util/regex";
 
 export default function Register() {
   const router = useRouter();
@@ -10,11 +11,49 @@ export default function Register() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const validateFields = () => {
+    const errors: Record<string, string> = {};
+
+    if (!fullname.trim()) {
+      errors.fullname = "Trường fullname không được để trống!";
+    } else if (fullname.length < 2 || fullname.length > 50) {
+      errors.fullname = "Fullname phải từ 2 đến 50 kí tự!";
+    } else if (!vietnameseNameRegex.test(fullname)) {
+      errors.fullname = "Tên không hợp lệ. Chỉ dùng chữ cái và khoảng trắng.";
+    }
+
+    if (!email.trim()) {
+      errors.email = "Trường email không được để trống!";
+    } else if (!emailRegex.test(email)) {
+      errors.email = "Email không đúng định dạng!";
+    }
+
+    if (!password.trim()) {
+      errors.password = "Trường password không được để trống!";
+    } else if (password.length < 6 || password.length > 15) {
+      errors.password = "Password phải từ 6 đến 15 kí tự!";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const actionSubmit = async (prevState: any, formData: FormData) => {
     const fullname = formData.get("fullname")?.toString().trim() || "";
     const email = formData.get("email")?.toString().trim() || "";
     const password = formData.get("password")?.toString().trim() || "";
+
+    // Kiểm tra các trường rỗng
+    if (!validateFields()) {
+      console.log(fieldErrors);
+      return {
+        success: false,
+        message: "Vui lòng kiểm tra lại thông tin!",
+        fieldErrors,
+      };
+    }
 
     try {
       const res = await authAxios.post("api/users/register", {
@@ -50,6 +89,7 @@ export default function Register() {
     }
   }, [state.success, state.message, router]);
 
+  //fix if else
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     switch (name) {
